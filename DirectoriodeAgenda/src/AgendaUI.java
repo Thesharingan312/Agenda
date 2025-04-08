@@ -41,7 +41,7 @@ public class AgendaUI extends JFrame {
         // Configuración básica de la ventana
         setTitle("Agenda de Citas");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(700, 500);
+        setSize(800, 520);
         setLocationRelativeTo(null);
 
         // Establecer el icono de la aplicación

@@ -21,15 +21,15 @@ public class AgendaUI extends JFrame {
     private JComboBox<String> comboTema;
 
     // Variables de color para los temas
-    private Color colorFondoClaro = new Color(0xF5F5DC); // Beige
-    private Color colorTextoClaro = new Color(0x333333); // Gris Oscuro
-    private Color colorAcentoClaro = new Color(0xA9A9A9); // Gris Claro
-    private Color colorFondoOscuro = new Color(0x303030); // Gris Oscuro
-    private Color colorTextoOscuro = new Color(0xF0F0F0); // Gris Claro
-    private Color colorAcentoOscuro = new Color(0x555555); // Gris Medio
-    private Color colorFondoContraste = new Color(0x000000); // Negro
-    private Color colorTextoContraste = new Color(0xFFFF00); // Amarillo
-    private Color colorAcentoContraste = new Color(0xFF4500); // Naranja Rojizo
+    private final Color colorFondoClaro = new Color(0xF5F5DC); // Beige
+    private final Color colorTextoClaro = new Color(0x333333); // Gris Oscuro
+    private final Color colorAcentoClaro = new Color(0xA9A9A9); // Gris Claro
+    private final Color colorFondoOscuro = new Color(0x303030); // Gris Oscuro
+    private final Color colorTextoOscuro = new Color(0xF0F0F0); // Gris Claro
+    private final Color colorAcentoOscuro = new Color(0x555555); // Gris Medio
+    private final Color colorFondoContraste = new Color(0x000000); // Negro
+    private final Color colorTextoContraste = new Color(0xFFFF00); // Amarillo
+    private final Color colorAcentoContraste = new Color(0xFF4500); // Naranja Rojizo
 
     public AgendaUI() {
         agenda = new Agenda();
@@ -68,7 +68,7 @@ public class AgendaUI extends JFrame {
             panelLogo.add(labelLogo);
         } catch (Exception e) {
             JLabel labelLogo = new JLabel("AGENDA DE CITAS");
-            labelLogo.setFont(new Font("Arial", Font.BOLD, 18));
+            labelLogo.setFont(new Font("Arial", Font.ITALIC, 20));
             labelLogo.setForeground(new Color(0, 102, 204)); // Azul oscuro
             panelLogo.add(labelLogo);
             System.err.println("No se pudo cargar el logo: " + e.getMessage());

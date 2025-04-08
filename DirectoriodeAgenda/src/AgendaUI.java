@@ -31,9 +31,40 @@ public class AgendaUI extends JFrame {
         setSize(700, 500);
         setLocationRelativeTo(null);
         
+        // Establecer el icono de la aplicación
+        try {
+            // Carga el icono desde los recursos o una ruta específica
+            ImageIcon icono = new ImageIcon(getClass().getResource("/recursos/agenda_icon.png"));
+            // Si no tienes un sistema de recursos, puedes usar una ruta del sistema:
+            // ImageIcon icono = new ImageIcon("ruta/a/agenda_icon.png");
+            setIconImage(icono.getImage());
+        } catch (Exception e) {
+            System.err.println("No se pudo cargar el icono de la aplicación: " + e.getMessage());
+        }
+        
         // Panel principal con BorderLayout
         JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
         panelPrincipal.setBorder(new EmptyBorder(10, 10, 10, 10));
+        
+        // Crear panel para el logo en la parte superior
+        JPanel panelLogo = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        try {
+            ImageIcon logoIcon = new ImageIcon(getClass().getResource("/recursos/agenda_logo.png"));
+            // Redimensionar si es necesario
+            Image img = logoIcon.getImage();
+            Image newImg = img.getScaledInstance(150, 60, java.awt.Image.SCALE_SMOOTH);
+            logoIcon = new ImageIcon(newImg);
+            
+            JLabel labelLogo = new JLabel(logoIcon);
+            panelLogo.add(labelLogo);
+        } catch (Exception e) {
+            // Si no se puede cargar el logo, mostrar un texto como alternativa
+            JLabel labelLogo = new JLabel("AGENDA DE CITAS");
+            labelLogo.setFont(new Font("Arial", Font.BOLD, 18));
+            labelLogo.setForeground(new Color(0, 102, 204)); // Azul oscuro
+            panelLogo.add(labelLogo);
+            System.err.println("No se pudo cargar el logo: " + e.getMessage());
+        }
         
         // Panel superior para navegación
         JPanel panelNavegacion = new JPanel(new GridLayout(1, 5, 5, 0));
@@ -52,6 +83,11 @@ public class AgendaUI extends JFrame {
         JPanel panelSuperior = new JPanel(new BorderLayout());
         panelSuperior.add(panelNavegacion, BorderLayout.CENTER);
         panelSuperior.add(btnIrA, BorderLayout.EAST);
+        
+        // Modificar la estructura para incluir el logo
+        JPanel panelNorte = new JPanel(new BorderLayout(5, 10));
+        panelNorte.add(panelLogo, BorderLayout.NORTH);
+        panelNorte.add(panelSuperior, BorderLayout.CENTER);
         
         // Panel central con la tabla de citas
         String[] columnas = {"Hora", "Título", "Descripción"};
@@ -80,7 +116,7 @@ public class AgendaUI extends JFrame {
         panelBotones.add(btnBuscar);
         
         // Agregar paneles al panel principal
-        panelPrincipal.add(panelSuperior, BorderLayout.NORTH);
+        panelPrincipal.add(panelNorte, BorderLayout.NORTH);
         panelPrincipal.add(scrollTabla, BorderLayout.CENTER);
         panelPrincipal.add(panelBotones, BorderLayout.SOUTH);
         
@@ -364,7 +400,7 @@ public class AgendaUI extends JFrame {
                 }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), 
-                                            "Error", JOptionPane.ERROR_MESSAGE);
+                                                "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

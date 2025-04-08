@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
- * Interfaz gráfica para la agenda de citas
+ * Interfaz gráfica para la agenda de citas con cambio de tema.
  */
 public class AgendaUI extends JFrame {
     private Agenda agenda;
@@ -19,18 +19,9 @@ public class AgendaUI extends JFrame {
     private JButton btnAgregar, btnEliminar, btnBuscar;
     private JButton btnAnterior, btnSiguiente, btnIrA;
 
-    // Nuevos componentes para el tema
-    private JButton btnCambiarTema;
-    private boolean temaOscuro = false;
-    private Color colorFondoClaro = Color.WHITE;
-    private Color colorTextoClaro = Color.BLACK;
-    private Color colorFondoOscuro = new Color(60, 63, 65); // Gris oscuro
-    private Color colorTextoOscuro = Color.WHITE;
-
     public AgendaUI() {
         agenda = new Agenda();
         inicializarComponentes();
-        actualizarColores(temaOscuro); // Establecer tema inicial
     }
 
     private void inicializarComponentes() {
@@ -44,8 +35,6 @@ public class AgendaUI extends JFrame {
         try {
             // Carga el icono desde los recursos o una ruta específica
             ImageIcon icono = new ImageIcon(getClass().getResource("/recursos/agenda_icon.png"));
-            // Si no tienes un sistema de recursos, puedes usar una ruta del sistema:
-            // ImageIcon icono = new ImageIcon("ruta/a/agenda_icon.png");
             setIconImage(icono.getImage());
         } catch (Exception e) {
             System.err.println("No se pudo cargar el icono de la aplicación: " + e.getMessage());
@@ -93,6 +82,16 @@ public class AgendaUI extends JFrame {
         panelSuperior.add(panelNavegacion, BorderLayout.CENTER);
         panelSuperior.add(btnIrA, BorderLayout.EAST);
 
+        // Agregar el combo de temas al panelSuperior en la zona WEST
+        String[] opcionesTemas = {"Claro", "Oscuro", "Ultra Contraste"};
+        JComboBox<String> comboTema = new JComboBox<>(opcionesTemas);
+        comboTema.setSelectedIndex(0); // por defecto: claro
+        comboTema.addActionListener(e -> {
+            String temaSeleccionado = (String) comboTema.getSelectedItem();
+            aplicarTema(temaSeleccionado);
+        });
+        panelSuperior.add(comboTema, BorderLayout.WEST);
+
         // Modificar la estructura para incluir el logo
         JPanel panelNorte = new JPanel(new BorderLayout(5, 10));
         panelNorte.add(panelLogo, BorderLayout.NORTH);
@@ -119,12 +118,10 @@ public class AgendaUI extends JFrame {
         btnAgregar = new JButton("Agregar Cita");
         btnEliminar = new JButton("Eliminar Cita");
         btnBuscar = new JButton("Buscar por Hora");
-        btnCambiarTema = new JButton("Tema Oscuro"); // Nuevo botón
 
         panelBotones.add(btnAgregar);
         panelBotones.add(btnEliminar);
         panelBotones.add(btnBuscar);
-        panelBotones.add(btnCambiarTema); // Agregar el botón al panel
 
         // Agregar paneles al panel principal
         panelPrincipal.add(panelNorte, BorderLayout.NORTH);
@@ -143,9 +140,6 @@ public class AgendaUI extends JFrame {
         int mesActual = cal.get(java.util.Calendar.MONTH) + 1; // Calendar.MONTH es 0-based
         agenda.buscarPagina(hoy, mesActual);
         actualizarVista();
-
-        //Establecer el tamaño preferido del botón Cambiar Tema
-        btnCambiarTema.setPreferredSize(new Dimension(120, 25));
     }
 
     private void configurarEventos() {
@@ -199,16 +193,6 @@ public class AgendaUI extends JFrame {
             }
         });
 
-        // Accion del botón cambiar tema
-        btnCambiarTema.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                temaOscuro = !temaOscuro;
-                actualizarColores(temaOscuro);
-                btnCambiarTema.setText(temaOscuro ? "Tema Claro" : "Tema Oscuro");
-            }
-        });
-
         // Desactivar botón eliminar hasta que se seleccione una cita
         btnEliminar.setEnabled(false);
         tablaCitas.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -236,9 +220,9 @@ public class AgendaUI extends JFrame {
         limpiarTablaCitas();
         for (Cita cita : citas) {
             Object[] fila = {
-                    cita.getHoraFormateada(),
-                    cita.getTitulo(),
-                    cita.getTexto()
+                cita.getHoraFormateada(),
+                cita.getTitulo(),
+                cita.getTexto()
             };
             modeloTabla.addRow(fila);
         }
@@ -264,9 +248,9 @@ public class AgendaUI extends JFrame {
         panel.add(new JLabel("Mes:"));
         panel.add(spinnerMes);
 
-        int resultado = JOptionPane.showConfirmDialog(this, panel, "Ir a fecha",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE);
+        int resultado = JOptionPane.showConfirmDialog(this, panel, "Ir a fecha", 
+                                                    JOptionPane.OK_CANCEL_OPTION, 
+                                                    JOptionPane.PLAIN_MESSAGE);
 
         if (resultado == JOptionPane.OK_OPTION) {
             try {
@@ -276,8 +260,8 @@ public class AgendaUI extends JFrame {
                 agenda.buscarPagina(dia, mes);
                 actualizarVista();
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(),
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), 
+                                                "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -286,8 +270,8 @@ public class AgendaUI extends JFrame {
     private void mostrarDialogoAgregarCita() {
         Pagina paginaActual = agenda.getPaginaActual();
         if (paginaActual == null) {
-            JOptionPane.showMessageDialog(this, "No hay una página seleccionada.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No hay una página seleccionada.", 
+                                            "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -318,9 +302,9 @@ public class AgendaUI extends JFrame {
         panel.add(new JLabel("Hora:"));
         panel.add(panelHora);
 
-        int resultado = JOptionPane.showConfirmDialog(this, panel, "Agregar Cita",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE);
+        int resultado = JOptionPane.showConfirmDialog(this, panel, "Agregar Cita", 
+                                                    JOptionPane.OK_CANCEL_OPTION, 
+                                                    JOptionPane.PLAIN_MESSAGE);
 
         if (resultado == JOptionPane.OK_OPTION) {
             try {
@@ -337,8 +321,8 @@ public class AgendaUI extends JFrame {
                 paginaActual.agregarCita(nuevaCita);
                 actualizarVista();
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(),
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), 
+                                                "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -352,11 +336,11 @@ public class AgendaUI extends JFrame {
 
         Pagina paginaActual = agenda.getPaginaActual();
         if (paginaActual != null) {
-            int confirmacion = JOptionPane.showConfirmDialog(this,
-                    "¿Está seguro de eliminar esta cita?",
-                    "Confirmar eliminación",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE);
+            int confirmacion = JOptionPane.showConfirmDialog(this, 
+                                                            "¿Está seguro de eliminar esta cita?", 
+                                                            "Confirmar eliminación", 
+                                                            JOptionPane.YES_NO_OPTION, 
+                                                            JOptionPane.QUESTION_MESSAGE);
 
             if (confirmacion == JOptionPane.YES_OPTION) {
                 paginaActual.borrarCita(filaSeleccionada);
@@ -369,8 +353,8 @@ public class AgendaUI extends JFrame {
     private void mostrarDialogoBuscarCita() {
         Pagina paginaActual = agenda.getPaginaActual();
         if (paginaActual == null) {
-            JOptionPane.showMessageDialog(this, "No hay una página seleccionada.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No hay una página seleccionada.", 
+                                            "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -391,9 +375,9 @@ public class AgendaUI extends JFrame {
         panel.add(new JLabel(":"));
         panel.add(spinnerMinuto);
 
-        int resultado = JOptionPane.showConfirmDialog(this, panel, "Buscar Cita",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE);
+        int resultado = JOptionPane.showConfirmDialog(this, panel, "Buscar Cita", 
+                                                    JOptionPane.OK_CANCEL_OPTION, 
+                                                    JOptionPane.PLAIN_MESSAGE);
 
         if (resultado == JOptionPane.OK_OPTION) {
             try {
@@ -402,89 +386,98 @@ public class AgendaUI extends JFrame {
 
                 Cita citaEncontrada = paginaActual.buscarCitaPorHora(hora, minuto);
                 if (citaEncontrada != null) {
-                    JOptionPane.showMessageDialog(this, "Cita encontrada:\n" + citaEncontrada,
-                            "Cita Encontrada", JOptionPane.INFORMATION_MESSAGE);
+                    // Seleccionar la cita en la tabla
+                    List<Cita> citas = paginaActual.getCitas();
+                    for (int i = 0; i < citas.size(); i++) {
+                        if (citas.get(i) == citaEncontrada) {
+                            tablaCitas.setRowSelectionInterval(i, i);
+                            break;
+                        }
+                    }
+
+                    JOptionPane.showMessageDialog(this, 
+                                                "Cita encontrada:\n" + citaEncontrada, 
+                                                "Resultado de búsqueda", 
+                                                JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(this, "No se encontró ninguna cita a esa hora.",
-                            "Cita No Encontrada", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, 
+                                                "No se encontró ninguna cita a las " + 
+                                                String.format("%02d:%02d", hora, minuto), 
+                                                "Resultado de búsqueda", 
+                                                JOptionPane.INFORMATION_MESSAGE);
                 }
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(),
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), 
+                                                "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    // Método para cambiar los colores
-    private void actualizarColores(boolean temaOscuro) {
-        Color colorFondo = temaOscuro ? colorFondoOscuro : colorFondoClaro;
-        Color colorTexto = temaOscuro ? colorTextoOscuro : colorTextoClaro;
+    // Método para aplicar el tema seleccionado
+    private void aplicarTema(String modo) {
+        Color fondo, texto, fondoBoton;
 
-        // Aplica los colores a los componentes
-        JPanel panelPrincipal = (JPanel) getContentPane();
-        panelPrincipal.setBackground(colorFondo);
-
-        for (Component component : panelPrincipal.getComponents()) {
-            aplicarColorRecursivo(component, colorFondo, colorTexto);
+        switch (modo.toLowerCase()) {
+            case "oscuro":
+                fondo = new Color(45, 45, 45);
+                texto = Color.WHITE;
+                fondoBoton = new Color(70, 70, 70);
+                break;
+            case "ultra contraste":
+                fondo = Color.BLACK;
+                texto = Color.YELLOW;
+                fondoBoton = Color.WHITE;
+                break;
+            case "claro":
+            default:
+                fondo = Color.WHITE;
+                texto = Color.BLACK;
+                fondoBoton = UIManager.getColor("Button.background");
+                break;
         }
 
-        // Colores específicos para la tabla
-        tablaCitas.setBackground(colorFondo);
-        tablaCitas.setForeground(colorTexto);
-        tablaCitas.getTableHeader().setBackground(colorFondo);
-        tablaCitas.getTableHeader().setForeground(colorTexto);
+        // Aplicamos el fondo al contenedor principal
+        getContentPane().setBackground(fondo);
+
+        // Aplicar los colores de forma recursiva a todos los componentes
+        for (Component c : getContentPane().getComponents()) {
+            aplicarColoresRecursivo(c, fondo, texto, fondoBoton);
+        }
+
+        // Refrescar la vista
+        repaint();
+        revalidate();
     }
 
-    private void aplicarColorRecursivo(Component component, Color colorFondo, Color colorTexto) {
-        component.setBackground(colorFondo);
-        component.setForeground(colorTexto);
+    // Método auxiliar recursivo para aplicar colores a cada componente
+    private void aplicarColoresRecursivo(Component comp, Color fondo, Color texto, Color fondoBoton) {
+        if (comp instanceof JPanel || comp instanceof JScrollPane) {
+            comp.setBackground(fondo);
+        }
 
-        if (component instanceof JPanel) {
-            JPanel panel = (JPanel) component;
-            for (Component child : panel.getComponents()) {
-                aplicarColorRecursivo(child, colorFondo, colorTexto);
-            }
-        } else if (component instanceof JScrollPane) {
-            JScrollPane scrollPane = (JScrollPane) component;
-            scrollPane.getViewport().setBackground(colorFondo);
-            scrollPane.getViewport().setForeground(colorTexto);
-            if (scrollPane.getViewport().getView() != null) {
-                aplicarColorRecursivo(scrollPane.getViewport().getView(), colorFondo, colorTexto);
-            }
-        } else if (component instanceof JTable) {
-            JTable table = (JTable) component;
-            table.setBackground(colorFondo);
-            table.setForeground(colorTexto);
-            table.setGridColor(colorTexto);
-            table.getTableHeader().setBackground(colorFondo);
-            table.getTableHeader().setForeground(colorTexto);
-        } else if (component instanceof AbstractButton) {
-            AbstractButton button = (AbstractButton) component;
-            button.setBackground(colorFondo);
-            button.setForeground(colorTexto);
-        } else if (component instanceof JLabel) {
-            JLabel label = (JLabel) component;
-            label.setForeground(colorTexto);
-        } else if (component instanceof JTextField) {
-            JTextField textField = (JTextField) component;
-            textField.setBackground(colorFondo);
-            textField.setForeground(colorTexto);
-        } else if (component instanceof JSpinner) {
-            JSpinner spinner = (JSpinner) component;
-            spinner.setBackground(colorFondo);
-            spinner.setForeground(colorTexto);
-            JComponent editor = spinner.getEditor();
-            if (editor instanceof JSpinner.DefaultEditor) {
-                ((JSpinner.DefaultEditor) editor).getTextField().setBackground(colorFondo);
-                ((JSpinner.DefaultEditor) editor).getTextField().setForeground(colorTexto);
+        if (comp instanceof JLabel) {
+            comp.setForeground(texto);
+        }
+
+        if (comp instanceof JButton) {
+            comp.setBackground(fondoBoton);
+            comp.setForeground(texto);
+        }
+
+        if (comp instanceof JTable) {
+            JTable tabla = (JTable) comp;
+            tabla.setBackground(fondo);
+            tabla.setForeground(texto);
+            tabla.setSelectionBackground(new Color(100, 100, 255));
+            tabla.setSelectionForeground(Color.WHITE);
+            tabla.getTableHeader().setBackground(fondoBoton);
+            tabla.getTableHeader().setForeground(texto);
+        }
+
+        if (comp instanceof Container) {
+            for (Component hijo : ((Container) comp).getComponents()) {
+                aplicarColoresRecursivo(hijo, fondo, texto, fondoBoton);
             }
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            AgendaUI agendaUI = new AgendaUI();
-            agendaUI.setVisible(true);
-        });
     }
 }

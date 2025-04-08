@@ -52,7 +52,7 @@ public class AgendaUI extends JFrame {
             ImageIcon logoIcon = new ImageIcon(getClass().getResource("/recursos/agenda_logo.png"));
             // Redimensionar si es necesario
             Image img = logoIcon.getImage();
-            Image newImg = img.getScaledInstance(150, 60, java.awt.Image.SCALE_SMOOTH);
+            Image newImg = img.getScaledInstance(150, 120, java.awt.Image.SCALE_SMOOTH);
             logoIcon = new ImageIcon(newImg);
             
             JLabel labelLogo = new JLabel(logoIcon);
